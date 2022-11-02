@@ -1,4 +1,6 @@
+import { useOutsideClickWatcher } from '@/hooks/useOutsideClickWatcher';
 import PropTypes from 'prop-types';
+import { useCallback, useRef, useState } from 'react';
 
 const inputTypes = [
 	'button',
@@ -25,27 +27,59 @@ const inputTypes = [
 	'week',
 ];
 
+const normalClasses =
+	'border border-gray-300 focus:border-indigo-500 focus:ring-indigo-300';
+const errorClasses = 'border border-red-500 focus:ring-red-300';
+
 export function Input({
 	name,
+	value,
+	handler,
 	type = 'text',
 	placeholder = '',
 	required = false,
+	hasError = false,
+	onOutsideClick,
 }) {
+	const [isInInput, setInInput] = useState(false);
+
+	const dynamicClasses = hasError ? errorClasses : normalClasses;
+
+	const mouseDownHandler = () => {
+		setInInput(true);
+	};
+
+	const resetInInput = useCallback(() => {
+		setInInput(false);
+	}, []);
+
+	const ref = useRef(null);
+
+	useOutsideClickWatcher(isInInput, ref, resetInInput, onOutsideClick);
+
 	return (
 		<input
+			className={`bg-gray-50 text-gray-900 rounded-lg w-full p-2.5 focus:outline-none focus:ring-4 ${dynamicClasses}`}
+			ref={ref}
 			type={type}
 			name={name}
 			id={name}
-			className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg w-full p-2.5 focus:outline-none focus:ring-4 focus:ring-indigo-300"
-			placeholder={placeholder}
 			required={required}
+			placeholder={placeholder}
+			value={value}
+			onChange={handler}
+			onMouseDown={mouseDownHandler}
 		/>
 	);
 }
 
 Input.propTypes = {
 	name: PropTypes.string.isRequired,
-	type: PropTypes.oneOf(inputTypes),
 	required: PropTypes.bool,
+	hasError: PropTypes.bool,
 	placeholder: PropTypes.string,
+	value: PropTypes.string,
+	type: PropTypes.oneOf(inputTypes),
+	handler: PropTypes.func,
+	onOutsideClick: PropTypes.func,
 };
