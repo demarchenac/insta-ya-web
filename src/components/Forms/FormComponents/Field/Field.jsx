@@ -24,11 +24,9 @@ export function Field({
 	});
 
 	const isEmpty = value.length === 0;
-	const hasError =
-		(wasTouched && isEmpty && required) ||
-		(isDirty && error && error.length > 0);
-
-	const errorText = wasTouched && isEmpty ? 'Campo requerido' : error;
+	const isRequired = wasTouched && isEmpty && required;
+	const hasError = isRequired || (isDirty && error && error.length > 0);
+	const errorText = isRequired ? 'Campo requerido' : error;
 
 	useEffect(() => {
 		onError(hasError);
