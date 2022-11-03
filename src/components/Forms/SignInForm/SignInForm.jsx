@@ -1,8 +1,10 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { api } from '@/api';
 import { Button } from '@/components/Button';
+import { useApi } from '@/hooks/useApi';
 import { useFormFields } from '@/hooks/useFormFields';
+import { useFormSubmission } from '@/hooks/useFormSubmission';
 import { Field } from '../FormComponents';
 
 const formInitialValues = { email: '', password: '' };
@@ -16,24 +18,23 @@ const signInSchema = z.object({
 });
 
 export function SignInForm() {
+	const navigateTo = useNavigate();
+
+	const { isLoading, request } = useApi(api.v1.auth.signIn, {
+		success: 'Sesión iniciada!',
+		onSuccess: () => navigateTo('/client/requests'),
+	});
+
 	const { values, hasError, onFieldUpdate, toggleError } = useFormFields({
 		initialValues: formInitialValues,
 	});
 
+	const { submitForm } = useFormSubmission({ request });
+
 	const handleFormSubmit = async (event) => {
 		event.preventDefault();
 
-		if (hasError) {
-			return;
-		}
-
-		// eslint-disable-next-line no-console
-		console.log({ values });
-
-		const response = await api.v1.auth.signIn();
-
-		// eslint-disable-next-line no-console
-		console.log({ response });
+		await submitForm({ values, hasFieldErrors: hasError });
 	};
 
 	return (
@@ -67,7 +68,11 @@ export function SignInForm() {
 				}}
 			/>
 
-			<Button type="submit" disabled={hasError}>
+			<Button
+				type="submit"
+				disabled={hasError || isLoading}
+				isLoading={isLoading}
+			>
 				Ingresar
 			</Button>
 

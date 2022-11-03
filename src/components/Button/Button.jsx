@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { Spinner } from '../Spinner';
 
 const buttonTypes = ['submit', 'reset', 'button'];
 
@@ -11,12 +12,21 @@ const errorClasses =
 
 export function Button({
 	type = 'button',
-	hasError = false,
 	disabled = false,
+	hasError = false,
+	isLoading = false,
 	children,
 }) {
 	let classes = hasError ? errorClasses : normalClasses;
 	classes = disabled ? disabledClasses : classes;
+
+	const loadingTree = (
+		<>
+			{children} &emsp; <Spinner size={20} />
+		</>
+	);
+
+	const loadingContent = isLoading ? loadingTree : children;
 
 	return (
 		<button
@@ -24,15 +34,17 @@ export function Button({
 			disabled={disabled}
 			className={`w-full text-sm font-medium h-13 px-5 py-2.5 text-white text-center rounded-lg ${classes}`}
 		>
-			<div className="w-full flex align-center justify-center">{children}</div>
+			<div className="w-full flex align-center justify-center">
+				{loadingContent}
+			</div>
 		</button>
 	);
 }
 
 Button.propTypes = {
+	isLoading: PropTypes.bool,
 	hasError: PropTypes.bool,
 	disabled: PropTypes.bool,
 	type: PropTypes.oneOf(buttonTypes),
-	children: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
-		.isRequired,
+	children: PropTypes.string.isRequired,
 };

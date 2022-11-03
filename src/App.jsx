@@ -1,13 +1,18 @@
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+
 import { ToastContainer } from 'react-toastify';
-import { AppRouter } from './pages';
+
+import { appRoutes } from './pages';
 
 import 'react-toastify/dist/ReactToastify.css';
+
+export const router = createBrowserRouter(appRoutes);
 
 function App() {
 	return (
 		<div>
 			<ToastContainer />
-			<AppRouter />
+			<RouterProvider router={router} />
 		</div>
 	);
 }

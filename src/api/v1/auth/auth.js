@@ -1,4 +1,4 @@
-import { base } from '../../axios';
+import { base } from '../../utilities/axios';
 import { v1Tag } from '../constants';
 
 const controller = `/${v1Tag}/auth`;

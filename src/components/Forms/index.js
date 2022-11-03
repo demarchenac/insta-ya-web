@@ -1,2 +1,6 @@
 export { SignInForm } from './SignInForm';
-export { SignUpForm } from './SignUpForm';
+export {
+	SignUpForm,
+	formSchema as signUpSchema,
+	formFields as signUpFields,
+} from './SignUpForm';

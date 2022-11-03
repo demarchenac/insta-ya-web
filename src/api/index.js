@@ -1,4 +1,4 @@
 import { v1 } from './v1';
-import { parseError } from './parseError';
+import { success } from './utilities';
 
-export const api = { v1, parseError };
+export const api = { v1, success };

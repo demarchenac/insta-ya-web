@@ -1,21 +1,50 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Outlet, Route } from 'react-router-dom';
 import { SignIn } from './auth/SignIn';
-import { SignUp } from './auth/SignUp';
+import { SignUp, action as signUpAction } from './auth/SignUp';
+import { Requests } from './client/Requests';
 
-export function AppRouter() {
+export function RootLayout() {
 	return (
-		<Routes>
-			<Route path="/" element={<Navigate to="/auth/sign-in" replace />} exact />
+		<main className="w-screen h-screen bg-gray-100">
+			<Outlet />
+		</main>
+	);
+}
 
-			{/* Auth routes */}
-			<Route path="/auth/sign-in" element={<SignIn />} />
-			<Route path="/auth/sign-up" element={<SignUp />} />
+export const appRoutes = [
+	{
+		path: '/',
+		element: <RootLayout />,
+		children: [
+			{ index: true, element: <Navigate to="/auth" replace /> },
+			{
+				path: 'auth',
+				children: [
+					{ index: true, element: <Navigate to="/auth/sign-in" replace /> },
+					{ path: 'sign-in', element: <SignIn /> },
+					{ path: 'sign-up', element: <SignUp />, action: signUpAction },
+				],
+			},
+		],
+	},
+];
 
-			{/* Client routes */}
-			<Route />
+export function AppRoutes() {
+	return (
+		<>
+			<Route path="/">
+				<Route index element={<Navigate to="/auth/sign-in" replace />} />
 
-			{/* Fallback */}
-			<Route path="*" element={<Navigate to="/auth/sign-in" replace />} />
-		</Routes>
+				{/* Auth routes */}
+				<Route path="/auth/sign-in" element={<SignIn />} />
+				<Route path="/auth/sign-up" element={<SignUp />} />
+
+				{/* Client routes */}
+				<Route path="client/requests" element={<Requests />} />
+
+				{/* Fallback */}
+				<Route path="*" element={<Navigate to="/auth/sign-in" replace />} />
+			</Route>
+		</>
 	);
 }

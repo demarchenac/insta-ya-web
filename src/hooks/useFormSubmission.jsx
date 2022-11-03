@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-export function useFormSubmission({ submissionSchema, request }) {
+export function useFormSubmission({ submissionSchema = null, request }) {
 	const [{ success, issue }, setFormCheck] = useState({
 		success: true,
 		issue: '',
@@ -11,19 +11,23 @@ export function useFormSubmission({ submissionSchema, request }) {
 			return null;
 		}
 
-		const submitParse = submissionSchema.safeParse(values);
-		if (!submitParse.success) {
-			setFormCheck({
-				success: false,
-				issue: submitParse.error.issues[0].message,
-			});
-			return null;
-		} else {
-			setFormCheck({
-				success: true,
-				issue: '',
-			});
+		if (submissionSchema) {
+			const submitParse = submissionSchema.safeParse(values);
+			if (!submitParse.success) {
+				setFormCheck({
+					success: false,
+					issue: submitParse.error.issues[0].message,
+				});
+				return null;
+			} else {
+				setFormCheck({
+					success: true,
+					issue: '',
+				});
 
+				return await request(values);
+			}
+		} else {
 			return await request(values);
 		}
 	}, []);

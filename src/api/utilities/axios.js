@@ -1,4 +1,7 @@
 import axios from 'axios';
+// import { toast } from 'react-toastify';
+// import { LocalStorage } from './localStorage';
+// import { parseError } from './parseError';
 
 const baseConfig = {
 	withCredentials: true,
@@ -18,8 +21,8 @@ const base = axios.create({
 // 	baseURL: `${import.meta.env.API_URL}/v1/auth/refresh`,
 // });
 
-// api.interceptors.request.use((config) => {
-// 	const token = localStorage.getAccessToken();
+// base.interceptors.request.use((config) => {
+// 	const token = LocalStorage.getAccessToken();
 // 	if (token) {
 // 		config.headers['Authorization'] = `Bearer ${token}`;
 // 	}
@@ -30,8 +33,7 @@ const base = axios.create({
 // 	(res) => res,
 // 	(error) => {
 // 		if (error.response.status === 403) {
-// 			localStorage.removeAccessToken();
-// 			Common.fireMiniMessage('Sesión caducada, inice sesión nuevamente...');
+// 			LocalStorage.signOut(error.response.data[0].code);
 // 			history.push('/auth/login');
 // 			return Promise.reject(error);
 // 		} else {
@@ -40,7 +42,7 @@ const base = axios.create({
 // 	},
 // );
 
-// api.interceptors.response.use(
+// base.interceptors.response.use(
 // 	(res) => res,
 // 	(error) => {
 // 		let requestMade = { ...error.config };
@@ -48,7 +50,7 @@ const base = axios.create({
 // 			requestMade._retry = true;
 // 			return refresh.post().then((res) => {
 // 				if (res.status === 200) {
-// 					localStorage.setAccessToken(res.data.access_token);
+// 					LocalStorage.signIn(res.data.access_token);
 // 					requestMade.headers[
 // 						'Authorization'
 // 					] = `Bearer ${res.data.access_token}`;

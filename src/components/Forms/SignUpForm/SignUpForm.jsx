@@ -1,7 +1,12 @@
-import { Link, useNavigate } from 'react-router-dom';
+import {
+	Form,
+	Link,
+	useActionData,
+	useNavigate,
+	useNavigation,
+} from 'react-router-dom';
 import { z } from 'zod';
 import { api } from '@/api';
-import { Spinner } from '@/components/Spinner';
 import { useApi } from '@/hooks/useApi';
 import { useFormFields } from '@/hooks/useFormFields';
 import { useFormSubmission } from '@/hooks/useFormSubmission';
@@ -9,14 +14,22 @@ import { Button } from '../../Button';
 import { Field } from '../FormComponents';
 
 const formInitialValues = {
-	name: '',
-	lastName: '',
-	password: '',
-	passwordConfirmation: '',
-	email: '',
+	name: 'aaa',
+	lastName: 'bbb',
+	password: '12345',
+	passwordConfirmation: '12345',
+	email: 'a@a.com',
 };
 
-export const signUpSchema = z.object({
+export const formFields = [
+	'name',
+	'lastName',
+	'password',
+	'passwordConfirmation',
+	'email',
+];
+
+export const fieldsSchema = z.object({
 	name: z
 		.string()
 		.min(3, { message: 'El nombre tiene mínimo 3 caracteres' })
@@ -36,7 +49,7 @@ export const signUpSchema = z.object({
 	email: z.string().email({ message: 'Correo electrónico inválido' }),
 });
 
-const submitSchema = signUpSchema.refine(
+export const formSchema = fieldsSchema.refine(
 	({ password, passwordConfirmation }) =>
 		password && passwordConfirmation ? password === passwordConfirmation : true,
 	{
@@ -45,9 +58,16 @@ const submitSchema = signUpSchema.refine(
 );
 
 export function SignUpForm() {
+	const { state } = useNavigation();
+
+	const isSubmitting = state === 'submitting';
+
+	const actionData = useActionData();
+	const { success, issue } = actionData ?? { success: true, issue: '' };
+
 	const navigateTo = useNavigate();
 
-	const { isLoading, request } = useApi(api.v1.auth.signUp, {
+	const { _isLoading, request } = useApi(api.v1.auth.signUp, {
 		success: 'Se ha creado su usuario',
 		onSuccess: () => navigateTo('/auth/sign-in'),
 	});
@@ -56,26 +76,28 @@ export function SignUpForm() {
 		initialValues: formInitialValues,
 	});
 
-	const { success, issue, submitForm } = useFormSubmission({
+	const { _success, _issue, submitForm } = useFormSubmission({
 		request,
-		submissionSchema: submitSchema,
+		submissionSchema: formSchema,
 	});
 
-	const handleFormSubmit = async (event) => {
+	const _handleFormSubmit = async (event) => {
 		event.preventDefault();
 
 		await submitForm({ values, hasFieldErrors: hasError });
 	};
 
 	return (
-		<form
+		<Form
 			className="flex flex-col space-y-6 w-full"
-			onSubmit={handleFormSubmit}
+			action="/auth/sign-up"
+			method="post"
 		>
 			<div className="flex space-x-4">
 				<Field
 					label="Nombre"
-					schema={signUpSchema.shape.name}
+					schema={fieldsSchema.shape.name}
+					initialValue={formInitialValues.name}
 					onUpdate={onFieldUpdate}
 					onError={toggleError}
 					inputProps={{
@@ -87,7 +109,8 @@ export function SignUpForm() {
 
 				<Field
 					label="Apellido"
-					schema={signUpSchema.shape.lastName}
+					schema={fieldsSchema.shape.lastName}
+					initialValue={formInitialValues.lastName}
 					onUpdate={onFieldUpdate}
 					onError={toggleError}
 					inputProps={{
@@ -100,7 +123,8 @@ export function SignUpForm() {
 
 			<Field
 				label="Correo electrónico"
-				schema={signUpSchema.shape.email}
+				schema={fieldsSchema.shape.email}
+				initialValue={formInitialValues.email}
 				onUpdate={onFieldUpdate}
 				onError={toggleError}
 				inputProps={{
@@ -113,7 +137,8 @@ export function SignUpForm() {
 
 			<Field
 				label="Contraseña"
-				schema={signUpSchema.shape.password}
+				schema={fieldsSchema.shape.password}
+				initialValue={formInitialValues.password}
 				onUpdate={onFieldUpdate}
 				onError={toggleError}
 				inputProps={{
@@ -126,7 +151,8 @@ export function SignUpForm() {
 
 			<Field
 				label="Confirmar contraseña"
-				schema={signUpSchema.shape.passwordConfirmation}
+				schema={fieldsSchema.shape.passwordConfirmation}
+				initialValue={formInitialValues.passwordConfirmation}
 				onUpdate={onFieldUpdate}
 				onError={toggleError}
 				inputProps={{
@@ -139,16 +165,11 @@ export function SignUpForm() {
 			<div className="flex flex-col">
 				<Button
 					type="submit"
-					disabled={hasError || isLoading}
+					disabled={hasError || isSubmitting}
 					hasError={!success}
+					isLoading={isSubmitting}
 				>
-					{!isLoading ? (
-						'Terminar registro'
-					) : (
-						<>
-							Terminar registro &emsp; <Spinner size={20} />
-						</>
-					)}
+					Terminar registro
 				</Button>
 
 				<span className="mt-2 h-8 text-red-500">{!success && issue}</span>
@@ -163,6 +184,6 @@ export function SignUpForm() {
 					Inicia sesi&oacute;n!
 				</Link>
 			</p>
-		</form>
+		</Form>
 	);
 }
