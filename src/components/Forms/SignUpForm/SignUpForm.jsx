@@ -7,37 +7,47 @@ import { Field } from '../FormComponents';
 const initialValues = {
 	name: '',
 	lastName: '',
+	email: '',
+	identificationNumber: '',
 	password: '',
 	passwordConfirmation: '',
-	email: '',
 };
 
 export const formFields = [
 	'name',
 	'lastName',
+	'email',
+	'identificationNumber',
 	'password',
 	'passwordConfirmation',
-	'email',
 ];
 
 export const fieldsSchema = z.object({
 	name: z
 		.string()
-		.min(3, { message: 'El nombre tiene mínimo 3 caracteres' })
-		.max(50, { message: 'El nombre tiene máximo 50 caracteres' }),
+		.min(3, { message: 'Mínimo 3 caracteres' })
+		.max(50, { message: 'Máximo 50 caracteres' }),
 	lastName: z
 		.string()
-		.min(3, { message: 'El apellido tiene mínimo 3 caracteres' })
-		.max(50, { message: 'El apellido tiene máximo 50 caracteres' }),
+		.min(3, { message: 'Mínimo 3 caracteres' })
+		.max(50, { message: 'Máximo 50 caracteres' }),
+	email: z.string().email({ message: 'Correo electrónico inválido' }),
+	identificationNumber: z
+		.string()
+		.min(3, { message: 'Mínimo 3 dígitos' })
+		.max(11, { message: 'Máximo 11 dígitos' })
+		.refine((num) => !isNaN(num), { message: 'El valor no es númerico' })
+		.refine((num) => !isNaN(num) && parseInt(num) > 99, {
+			message: 'El valor mínimo es 100',
+		}),
 	password: z
 		.string()
-		.min(5, { message: 'La contraseña tiene mínimo 5 caracteres' })
-		.max(16, { message: 'La contraseña tiene máximo 16 caracteres' }),
+		.min(5, { message: 'Mínimo 5 caracteres' })
+		.max(16, { message: 'Máximo 16 caracteres' }),
 	passwordConfirmation: z
 		.string()
-		.min(5, { message: 'La confirmación tiene mínimo 5 caracteres' })
-		.max(16, { message: 'La confirmación tiene máximo 16 caracteres' }),
-	email: z.string().email({ message: 'Correo electrónico inválido' }),
+		.min(5, { message: 'Mínimo 5 caracteres' })
+		.max(16, { message: 'Máximo 16 caracteres' }),
 });
 
 export const formSchema = fieldsSchema.refine(
@@ -94,47 +104,64 @@ export function SignUpForm() {
 				/>
 			</div>
 
-			<Field
-				label="Correo electrónico"
-				schema={fieldsSchema.shape.email}
-				initialValue={initialValues.email}
-				onUpdate={onFieldUpdate}
-				onError={toggleError}
-				inputProps={{
-					type: 'email',
-					name: 'email',
-					placeholder: 'usuario@dominio.com',
-					required: true,
-				}}
-			/>
+			<div className="flex space-x-4">
+				<Field
+					label="Correo electrónico"
+					schema={fieldsSchema.shape.email}
+					initialValue={initialValues.email}
+					onUpdate={onFieldUpdate}
+					onError={toggleError}
+					inputProps={{
+						type: 'email',
+						name: 'email',
+						placeholder: 'usuario@dominio.com',
+						required: true,
+					}}
+				/>
+				<Field
+					label="CC/NIT"
+					schema={fieldsSchema.shape.identificationNumber}
+					initialValue={initialValues.identificationNumber}
+					onUpdate={onFieldUpdate}
+					onError={toggleError}
+					inputProps={{
+						name: 'identificationNumber',
+						placeholder: '1.234.567.890',
+						required: true,
+					}}
+				/>
+			</div>
 
-			<Field
-				label="Contraseña"
-				schema={fieldsSchema.shape.password}
-				initialValue={initialValues.password}
-				onUpdate={onFieldUpdate}
-				onError={toggleError}
-				inputProps={{
-					type: 'password',
-					name: 'password',
-					placeholder: '••••••••',
-					required: true,
-				}}
-			/>
+			<div className="flex space-x-4">
+				<Field
+					label="Contraseña"
+					schema={fieldsSchema.shape.password}
+					initialValue={initialValues.password}
+					onUpdate={onFieldUpdate}
+					onError={toggleError}
+					inputProps={{
+						type: 'password',
+						name: 'password',
+						placeholder: '••••••••',
+						required: true,
+					}}
+				/>
 
-			<Field
-				label="Confirmar contraseña"
-				schema={fieldsSchema.shape.passwordConfirmation}
-				initialValue={initialValues.passwordConfirmation}
-				onUpdate={onFieldUpdate}
-				onError={toggleError}
-				inputProps={{
-					type: 'password',
-					name: 'passwordConfirmation',
-					placeholder: '••••••••',
-					required: true,
-				}}
-			/>
+				<Field
+					label="Confirmar contraseña"
+					schema={fieldsSchema.shape.passwordConfirmation}
+					initialValue={initialValues.passwordConfirmation}
+					onUpdate={onFieldUpdate}
+					onError={toggleError}
+					inputProps={{
+						type: 'password',
+						name: 'passwordConfirmation',
+						placeholder: '••••••••',
+						required: true,
+					}}
+				/>
+			</div>
+
 			<div className="flex flex-col">
 				<Button
 					type="submit"

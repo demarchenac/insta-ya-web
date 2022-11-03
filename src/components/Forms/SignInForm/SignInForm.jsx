@@ -4,7 +4,7 @@ import { Button } from '@/components/Button';
 import { useFormFields } from '@/hooks/useFormFields';
 import { Field } from '../FormComponents';
 
-const initialValues = { email: '', password: '' };
+const initialValues = { email: 'dperez@domain.com', password: '12345' };
 
 export const formFields = ['email', 'password'];
 
@@ -33,6 +33,7 @@ export function SignInForm() {
 			<Field
 				label="Correo electrónico"
 				schema={fieldsSchema.shape.email}
+				initialValue={initialValues.email}
 				onUpdate={onFieldUpdate}
 				onError={toggleError}
 				inputProps={{
@@ -46,6 +47,7 @@ export function SignInForm() {
 			<Field
 				label="Contraseña"
 				schema={fieldsSchema.shape.password}
+				initialValue={initialValues.password}
 				onUpdate={onFieldUpdate}
 				onError={toggleError}
 				inputProps={{

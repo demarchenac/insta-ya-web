@@ -1,17 +1,20 @@
 import { api } from '@/api';
-import { doRequest } from '@/api/utilities';
+import { doRequest, LocalStorage } from '@/api/utilities';
 import { redirect } from 'react-router-dom';
 import { signInFields, SignInForm } from '../../components/Forms';
 import { Logo } from '../../components/Logo';
 
 export async function action({ request }) {
 	try {
-		await doRequest({
+		const response = await doRequest({
 			request,
 			keys: signInFields,
 			endpoint: api.v1.auth.signIn,
 			success: api.success.auth.signIn,
 		});
+
+		const token = response.data.payload.lemon_qid;
+		LocalStorage.signIn(token);
 
 		return redirect('/client/requests');
 	} catch (error) {
@@ -23,7 +26,7 @@ export async function action({ request }) {
 
 export function SignIn() {
 	return (
-		<div className="flex flex-col items-center justify-center px-6 py-8 h-screen">
+		<section className="flex flex-col items-center justify-center px-6 py-8 h-screen">
 			<Logo />
 			<div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-2xl">
 				<div className="p-8 space-y-6">
@@ -33,6 +36,6 @@ export function SignIn() {
 					<SignInForm />
 				</div>
 			</div>
-		</div>
+		</section>
 	);
 }

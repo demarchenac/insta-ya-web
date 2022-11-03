@@ -1,3 +1,4 @@
+import { ProtectedRoute, SessionRoute } from '@/components/Routes';
 import { Navigate, Outlet } from 'react-router-dom';
 import { SignIn, action as signInAction } from './auth/SignIn';
 import { SignUp, action as signUpAction } from './auth/SignUp';
@@ -21,8 +22,16 @@ export const appRoutes = [
 				path: 'auth',
 				children: [
 					{ index: true, element: <Navigate to="/auth/sign-in" replace /> },
-					{ path: 'sign-in', element: <SignIn />, action: signInAction },
-					{ path: 'sign-up', element: <SignUp />, action: signUpAction },
+					{
+						path: 'sign-in',
+						element: <SessionRoute route={<SignIn />} />,
+						action: signInAction,
+					},
+					{
+						path: 'sign-up',
+						element: <SessionRoute route={<SignUp />} />,
+						action: signUpAction,
+					},
 				],
 			},
 			{
@@ -31,8 +40,7 @@ export const appRoutes = [
 					{ index: true, element: <Navigate to="/client/requests" replace /> },
 					{
 						path: 'requests',
-						element: <Outlet />,
-						children: [{ index: true, element: <Requests /> }],
+						element: <ProtectedRoute route={<Requests />} />,
 					},
 				],
 			},

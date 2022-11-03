@@ -1,9 +1,9 @@
 import axios from 'axios';
-// import { toast } from 'react-toastify';
-// import { LocalStorage } from './localStorage';
-// import { parseError } from './parseError';
+import { toast } from 'react-toastify';
+import { LocalStorage } from './localStorage';
+import { parseError } from './parseError';
 
-const baseConfig = {
+const sharedConfig = {
 	withCredentials: true,
 	headers: {
 		'Content-Type': 'application/json',
@@ -11,36 +11,43 @@ const baseConfig = {
 	},
 };
 
+const refresh = axios.create({
+	...sharedConfig,
+	baseURL: `${import.meta.env.API_URL}/v1/auth/refresh`,
+});
+
+refresh.interceptors.response.use(
+	(res) => res,
+	(error) => {
+		if (error.response.status === 403) {
+			LocalStorage.signOut();
+			toast(parseError(error.response.data[0].code), {
+				autoClose: false,
+				closeButton: true,
+				draggable: false,
+				type: 'error',
+				position: 'bottom-right',
+			});
+			history.push('/auth/sign-in');
+			return Promise.reject(error);
+		} else {
+			return Promise.reject(error);
+		}
+	},
+);
+
 const base = axios.create({
-	...baseConfig,
+	...sharedConfig,
 	baseURL: import.meta.env.VITE_API_URL,
 });
 
-// const refresh = axios.create({
-// 	...baseConfig,
-// 	baseURL: `${import.meta.env.API_URL}/v1/auth/refresh`,
-// });
-
-// base.interceptors.request.use((config) => {
-// 	const token = LocalStorage.getAccessToken();
-// 	if (token) {
-// 		config.headers['Authorization'] = `Bearer ${token}`;
-// 	}
-// 	return config;
-// });
-
-// refresh.interceptors.response.use(
-// 	(res) => res,
-// 	(error) => {
-// 		if (error.response.status === 403) {
-// 			LocalStorage.signOut(error.response.data[0].code);
-// 			history.push('/auth/login');
-// 			return Promise.reject(error);
-// 		} else {
-// 			return Promise.reject(error);
-// 		}
-// 	},
-// );
+base.interceptors.request.use((config) => {
+	const token = LocalStorage.getToken();
+	if (token) {
+		config.headers['Authorization'] = `Bearer ${token}`;
+	}
+	return config;
+});
 
 // base.interceptors.response.use(
 // 	(res) => res,

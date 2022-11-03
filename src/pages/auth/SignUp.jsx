@@ -24,7 +24,7 @@ export async function action({ request }) {
 
 export function SignUp() {
 	return (
-		<div className="flex flex-col items-center justify-center px-6 py-8 h-screen">
+		<section className="flex flex-col items-center justify-center px-6 py-8 h-screen">
 			<Logo />
 			<div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-2xl">
 				<div className="p-8 space-y-6">
@@ -34,6 +34,6 @@ export function SignUp() {
 					<SignUpForm />
 				</div>
 			</div>
-		</div>
+		</section>
 	);
 }
