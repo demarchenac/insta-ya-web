@@ -4,7 +4,7 @@ import { api } from '@/api';
 
 export function useApi(
 	endpoint,
-	{ success = '', error: _error = '' } = { success: '', error: '' },
+	{ success = '', onSuccess = () => {} } = { success: '', onSuccess: () => {} },
 ) {
 	const [isLoading, toggleLoading] = useState(false);
 	const [wasFetched, toggleFetch] = useState(false);
@@ -19,13 +19,14 @@ export function useApi(
 		try {
 			const response = await endpoint(body);
 			setData(response.data.payload);
+			toast.dismiss();
 			toast(success, {
-				delay: 5000,
-				closeButton: true,
+				closeButton: false,
 				draggable: false,
 				type: 'success',
 				position: 'bottom-left',
 			});
+			onSuccess();
 		} catch (error) {
 			setData({});
 			toggleError(true);

@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { api } from '@/api';
-import { useFormFields } from '@/hooks/useForm';
-import { Button } from '../../Button';
-import { Field } from '../FormComponents';
 import { Spinner } from '@/components/Spinner';
 import { useApi } from '@/hooks/useApi';
+import { useFormFields } from '@/hooks/useFormFields';
+import { useFormSubmission } from '@/hooks/useFormSubmission';
+import { Button } from '../../Button';
+import { Field } from '../FormComponents';
 
 const formInitialValues = {
 	name: '',
@@ -45,36 +45,26 @@ const submitSchema = signUpSchema.refine(
 );
 
 export function SignUpForm() {
-	const [formCheck, setFormCheck] = useState({ success: true, issue: '' });
+	const navigateTo = useNavigate();
+
+	const { isLoading, request } = useApi(api.v1.auth.signUp, {
+		success: 'Se ha creado su usuario',
+		onSuccess: () => navigateTo('/auth/sign-in'),
+	});
 
 	const { values, hasError, onFieldUpdate, toggleError } = useFormFields({
 		initialValues: formInitialValues,
 	});
 
-	const { isLoading, request } = useApi(api.v1.auth.signUp);
+	const { success, issue, submitForm } = useFormSubmission({
+		request,
+		submissionSchema: submitSchema,
+	});
 
 	const handleFormSubmit = async (event) => {
 		event.preventDefault();
 
-		if (hasError) {
-			return;
-		}
-
-		const submitParse = submitSchema.safeParse(values);
-		if (!submitParse.success) {
-			setFormCheck({
-				success: false,
-				issue: submitParse.error.issues[0].message,
-			});
-			return;
-		} else {
-			setFormCheck({
-				success: true,
-				issue: '',
-			});
-		}
-
-		await request(values);
+		await submitForm({ values, hasFieldErrors: hasError });
 	};
 
 	return (
@@ -150,7 +140,7 @@ export function SignUpForm() {
 				<Button
 					type="submit"
 					disabled={hasError || isLoading}
-					hasError={!formCheck.success}
+					hasError={!success}
 				>
 					{!isLoading ? (
 						'Terminar registro'
@@ -161,9 +151,7 @@ export function SignUpForm() {
 					)}
 				</Button>
 
-				<span className="mt-2 h-8 text-red-500">
-					{!formCheck.success && formCheck.issue}
-				</span>
+				<span className="mt-2 h-8 text-red-500">{!success && issue}</span>
 			</div>
 
 			<p className="text-sm font-normal text-gray-500 ">

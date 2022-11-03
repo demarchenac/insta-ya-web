@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { z } from 'zod';
 import { api } from '@/api';
 import { Button } from '@/components/Button';
-import { useFormFields } from '@/hooks/useForm';
+import { useFormFields } from '@/hooks/useFormFields';
 import { Field } from '../FormComponents';
 
 const formInitialValues = { email: '', password: '' };
