@@ -1,24 +1,15 @@
-import {
-	Form,
-	Link,
-	useActionData,
-	useNavigate,
-	useNavigation,
-} from 'react-router-dom';
+import { Form, Link, useActionData, useNavigation } from 'react-router-dom';
 import { z } from 'zod';
-import { api } from '@/api';
-import { useApi } from '@/hooks/useApi';
 import { useFormFields } from '@/hooks/useFormFields';
-import { useFormSubmission } from '@/hooks/useFormSubmission';
 import { Button } from '../../Button';
 import { Field } from '../FormComponents';
 
-const formInitialValues = {
-	name: 'aaa',
-	lastName: 'bbb',
-	password: '12345',
-	passwordConfirmation: '12345',
-	email: 'a@a.com',
+const initialValues = {
+	name: '',
+	lastName: '',
+	password: '',
+	passwordConfirmation: '',
+	email: '',
 };
 
 export const formFields = [
@@ -65,27 +56,9 @@ export function SignUpForm() {
 	const actionData = useActionData();
 	const { success, issue } = actionData ?? { success: true, issue: '' };
 
-	const navigateTo = useNavigate();
-
-	const { _isLoading, request } = useApi(api.v1.auth.signUp, {
-		success: 'Se ha creado su usuario',
-		onSuccess: () => navigateTo('/auth/sign-in'),
+	const { hasError, onFieldUpdate, toggleError } = useFormFields({
+		initialValues,
 	});
-
-	const { values, hasError, onFieldUpdate, toggleError } = useFormFields({
-		initialValues: formInitialValues,
-	});
-
-	const { _success, _issue, submitForm } = useFormSubmission({
-		request,
-		submissionSchema: formSchema,
-	});
-
-	const _handleFormSubmit = async (event) => {
-		event.preventDefault();
-
-		await submitForm({ values, hasFieldErrors: hasError });
-	};
 
 	return (
 		<Form
@@ -97,7 +70,7 @@ export function SignUpForm() {
 				<Field
 					label="Nombre"
 					schema={fieldsSchema.shape.name}
-					initialValue={formInitialValues.name}
+					initialValue={initialValues.name}
 					onUpdate={onFieldUpdate}
 					onError={toggleError}
 					inputProps={{
@@ -110,7 +83,7 @@ export function SignUpForm() {
 				<Field
 					label="Apellido"
 					schema={fieldsSchema.shape.lastName}
-					initialValue={formInitialValues.lastName}
+					initialValue={initialValues.lastName}
 					onUpdate={onFieldUpdate}
 					onError={toggleError}
 					inputProps={{
@@ -124,7 +97,7 @@ export function SignUpForm() {
 			<Field
 				label="Correo electrónico"
 				schema={fieldsSchema.shape.email}
-				initialValue={formInitialValues.email}
+				initialValue={initialValues.email}
 				onUpdate={onFieldUpdate}
 				onError={toggleError}
 				inputProps={{
@@ -138,7 +111,7 @@ export function SignUpForm() {
 			<Field
 				label="Contraseña"
 				schema={fieldsSchema.shape.password}
-				initialValue={formInitialValues.password}
+				initialValue={initialValues.password}
 				onUpdate={onFieldUpdate}
 				onError={toggleError}
 				inputProps={{
@@ -152,7 +125,7 @@ export function SignUpForm() {
 			<Field
 				label="Confirmar contraseña"
 				schema={fieldsSchema.shape.passwordConfirmation}
-				initialValue={formInitialValues.passwordConfirmation}
+				initialValue={initialValues.passwordConfirmation}
 				onUpdate={onFieldUpdate}
 				onError={toggleError}
 				inputProps={{
