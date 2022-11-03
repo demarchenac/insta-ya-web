@@ -1,15 +1,14 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Form, Link, useNavigation } from 'react-router-dom';
 import { z } from 'zod';
-import { api } from '@/api';
 import { Button } from '@/components/Button';
-import { useApi } from '@/hooks/useApi';
 import { useFormFields } from '@/hooks/useFormFields';
-import { useFormSubmission } from '@/hooks/useFormSubmission';
 import { Field } from '../FormComponents';
 
-const formInitialValues = { email: '', password: '' };
+const initialValues = { email: '', password: '' };
 
-const signInSchema = z.object({
+export const formFields = ['email', 'password'];
+
+const fieldsSchema = z.object({
 	email: z.string().email({ message: 'Correo electrónico inválido' }),
 	password: z
 		.string()
@@ -18,33 +17,22 @@ const signInSchema = z.object({
 });
 
 export function SignInForm() {
-	const navigateTo = useNavigate();
+	const { state } = useNavigation();
+	const isSubmitting = state === 'submitting';
 
-	const { isLoading, request } = useApi(api.v1.auth.signIn, {
-		success: 'Sesión iniciada!',
-		onSuccess: () => navigateTo('/client/requests'),
+	const { hasError, onFieldUpdate, toggleError } = useFormFields({
+		initialValues,
 	});
-
-	const { values, hasError, onFieldUpdate, toggleError } = useFormFields({
-		initialValues: formInitialValues,
-	});
-
-	const { submitForm } = useFormSubmission({ request });
-
-	const handleFormSubmit = async (event) => {
-		event.preventDefault();
-
-		await submitForm({ values, hasFieldErrors: hasError });
-	};
 
 	return (
-		<form
+		<Form
 			className="flex flex-col space-y-6 w-full"
-			onSubmit={handleFormSubmit}
+			action="/auth/sign-in"
+			method="post"
 		>
 			<Field
 				label="Correo electrónico"
-				schema={signInSchema.shape.email}
+				schema={fieldsSchema.shape.email}
 				onUpdate={onFieldUpdate}
 				onError={toggleError}
 				inputProps={{
@@ -57,7 +45,7 @@ export function SignInForm() {
 
 			<Field
 				label="Contraseña"
-				schema={signInSchema.shape.password}
+				schema={fieldsSchema.shape.password}
 				onUpdate={onFieldUpdate}
 				onError={toggleError}
 				inputProps={{
@@ -70,8 +58,8 @@ export function SignInForm() {
 
 			<Button
 				type="submit"
-				disabled={hasError || isLoading}
-				isLoading={isLoading}
+				disabled={hasError || isSubmitting}
+				isLoading={isSubmitting}
 			>
 				Ingresar
 			</Button>
@@ -85,6 +73,6 @@ export function SignInForm() {
 					Registrate!
 				</Link>
 			</p>
-		</form>
+		</Form>
 	);
 }

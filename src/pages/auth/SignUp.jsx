@@ -7,7 +7,6 @@ import { Logo } from '../../components/Logo';
 export async function action({ request }) {
 	try {
 		await doRequest({
-			to: 'auth/sign-in',
 			request,
 			keys: signUpFields,
 			schema: signUpSchema,

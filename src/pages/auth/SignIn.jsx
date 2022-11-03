@@ -1,5 +1,25 @@
-import { SignInForm } from '../../components/Forms';
+import { api } from '@/api';
+import { doRequest } from '@/api/utilities';
+import { redirect } from 'react-router-dom';
+import { signInFields, SignInForm } from '../../components/Forms';
 import { Logo } from '../../components/Logo';
+
+export async function action({ request }) {
+	try {
+		await doRequest({
+			request,
+			keys: signInFields,
+			endpoint: api.v1.auth.signIn,
+			success: api.success.auth.signIn,
+		});
+
+		return redirect('/client/requests');
+	} catch (error) {
+		if (!error.toasted) {
+			throw error;
+		}
+	}
+}
 
 export function SignIn() {
 	return (

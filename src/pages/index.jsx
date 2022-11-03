@@ -1,5 +1,5 @@
 import { Navigate, Outlet, Route } from 'react-router-dom';
-import { SignIn } from './auth/SignIn';
+import { SignIn, action as signInAction } from './auth/SignIn';
 import { SignUp, action as signUpAction } from './auth/SignUp';
 import { Requests } from './client/Requests';
 
@@ -21,7 +21,7 @@ export const appRoutes = [
 				path: 'auth',
 				children: [
 					{ index: true, element: <Navigate to="/auth/sign-in" replace /> },
-					{ path: 'sign-in', element: <SignIn /> },
+					{ path: 'sign-in', element: <SignIn />, action: signInAction },
 					{ path: 'sign-up', element: <SignUp />, action: signUpAction },
 				],
 			},
