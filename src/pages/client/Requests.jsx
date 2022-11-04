@@ -4,6 +4,7 @@ import { doFetch } from '@/api/utilities/doFetch';
 import { Divider } from '@/components/Divider';
 import { Empty } from '@/components/Empty';
 import { Logo } from '@/components/Logo';
+import { RequestTable } from '@/components/Request';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -42,8 +43,8 @@ export function Requests() {
 
 	return (
 		<section className="flex flex-col items-center justify-center px-6 py-8 h-screen">
-			<div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-2xl">
-				<div className="flex flex-col p-8 space-y-2">
+			<div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-3xl">
+				<div className="flex flex-col p-8 space-y-4">
 					<div className="flex w-full justify-between">
 						<h1 className="flex align-center text-2xl text-gray-900">
 							<Logo spin /> &nbsp; - Solicitudes
@@ -56,11 +57,13 @@ export function Requests() {
 						</span>
 					</div>
 					<Divider />
-					<span className="ml-4 pt-2 text-indigo-600 italic cursor-pointer hover:underline">
-						Añadir solicitud
-					</span>
+					<div className="flex flex-col space-y-8">
+						<span className="ml-4 pt-2 text-indigo-600 italic cursor-pointer hover:underline">
+							Añadir solicitud
+						</span>
 
-					{isEmpty && <Empty />}
+						{isEmpty ? <Empty /> : <RequestTable requests={requests} />}
+					</div>
 
 					<Divider />
 				</div>
