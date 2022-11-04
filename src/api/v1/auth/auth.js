@@ -3,10 +3,10 @@ import { v1Tag } from '../constants';
 
 const controller = `/${v1Tag}/auth`;
 
-export const privatePing = (body) =>
+export const privatePing = () =>
 	new Promise((resolve, reject) => {
 		base
-			.get(`${controller}/private-ping`, body)
+			.get(`${controller}/private-ping`)
 			.then((res) => resolve(res))
 			.catch((err) => reject(err));
 	});

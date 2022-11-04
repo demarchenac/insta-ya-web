@@ -2,7 +2,7 @@ import { ProtectedRoute, SessionRoute } from '@/components/Routes';
 import { Navigate, Outlet } from 'react-router-dom';
 import { SignIn, action as signInAction } from './auth/SignIn';
 import { SignUp, action as signUpAction } from './auth/SignUp';
-import { Requests } from './client/Requests';
+import { Requests, loader as requestsLoader } from './client/Requests';
 
 function RootLayout() {
 	return (
@@ -40,6 +40,7 @@ export const appRoutes = [
 					{ index: true, element: <Navigate to="/client/requests" replace /> },
 					{
 						path: 'requests',
+						loader: requestsLoader,
 						element: <ProtectedRoute route={<Requests />} />,
 					},
 				],

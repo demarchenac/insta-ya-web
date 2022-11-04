@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { router } from '@/App';
 import { LocalStorage } from './localStorage';
 import { parseError } from './parseError';
 
@@ -13,12 +14,17 @@ const sharedConfig = {
 
 const refresh = axios.create({
 	...sharedConfig,
-	baseURL: `${import.meta.env.API_URL}/v1/auth/refresh`,
+	baseURL: `${import.meta.env.VITE_API_URL}/v1/auth/refresh`,
 });
 
 refresh.interceptors.response.use(
 	(res) => res,
 	(error) => {
+		// eslint-disable-next-line no-console
+		console.log('[REFRESH API] error handler');
+		// eslint-disable-next-line no-console
+		console.log({ response: error.response });
+
 		if (error.response.status === 403) {
 			LocalStorage.signOut();
 			toast(parseError(error.response.data[0].code), {
@@ -28,11 +34,12 @@ refresh.interceptors.response.use(
 				type: 'error',
 				position: 'bottom-right',
 			});
-			history.push('/auth/sign-in');
-			return Promise.reject(error);
-		} else {
-			return Promise.reject(error);
+			router.navigate('/auth/sign-in', { replace: true });
 		}
+
+		error.config.handledByRefresh = true;
+
+		throw error;
 	},
 );
 
@@ -49,58 +56,37 @@ base.interceptors.request.use((config) => {
 	return config;
 });
 
-// base.interceptors.response.use(
-// 	(res) => res,
-// 	(error) => {
-// 		let requestMade = { ...error.config };
-// 		if (error.response.status === 401 && !requestMade._retry) {
-// 			requestMade._retry = true;
-// 			return refresh.post().then((res) => {
-// 				if (res.status === 200) {
-// 					LocalStorage.signIn(res.data.access_token);
-// 					requestMade.headers[
-// 						'Authorization'
-// 					] = `Bearer ${res.data.access_token}`;
-// 					return axios(requestMade);
-// 				}
-// 			});
-// 		} else if (error.response.status === 403) {
-// 			if (
-// 				error.response.data.detail ===
-// 				'Authentication credentials were not provided.'
-// 			) {
-// 				localStorage.removeAccessToken();
-// 				Common.fireMiniMessage('Sesión caducada, inice sesión nuevamente...');
-// 				history.push('/auth/login');
-// 			} else {
-// 				Swal.fire({
-// 					title: 'Error!',
-// 					text: error.response.data.detail,
-// 					icon: 'error',
-// 					confirmButtonText: 'Ok',
-// 				});
-// 			}
-// 		} else if (error?.response?.data?.message === 'Invalid date range') {
-// 			return error.response;
-// 		} else if (error.response.status >= 400) {
-// 			const errKeys = Object.keys(error.response.data);
-// 			const errMessage = errKeys.map((key) => {
-// 				const errValue = error.response.data[key];
-// 				if (typeof errValue === 'string') {
-// 					return error.response.data[key];
-// 				} else {
-// 					return error.response.data[key].join(' <br/> ');
-// 				}
-// 			});
+base.interceptors.response.use(
+	(res) => res,
+	async (error) => {
+		let requestMade = { ...error.config, ...sharedConfig };
+		// eslint-disable-next-line no-console
+		console.log('[BASE API] response interceptor');
+		// eslint-disable-next-line no-console
+		console.log(requestMade);
+		if (error.response.status === 401 && !requestMade._retry) {
+			requestMade._retry = true;
+			const refreshResponse = await refresh.post();
 
-// 			Swal.fire({
-// 				title: 'Error!',
-// 				html: errMessage,
-// 				icon: 'error',
-// 				confirmButtonText: 'Ok',
-// 			});
-// 		}
-// 	},
-// );
+			if (refreshResponse.status === 200) {
+				const token = refreshResponse.data.payload.lemon_qid;
+
+				LocalStorage.signIn(token);
+				requestMade.headers['Authorization'] = `Bearer ${token}`;
+
+				const response = await axios(requestMade);
+				return response;
+			}
+		} else if (error.response.status === 403) {
+			// eslint-disable-next-line no-console
+			console.log(error);
+		} else if (error.response.status >= 400) {
+			// eslint-disable-next-line no-console
+			console.log(error);
+		} else {
+			throw error;
+		}
+	},
+);
 
 export { base };
