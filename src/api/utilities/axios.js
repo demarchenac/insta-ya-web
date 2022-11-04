@@ -60,10 +60,6 @@ base.interceptors.response.use(
 	(res) => res,
 	async (error) => {
 		let requestMade = { ...error.config, ...sharedConfig };
-		// eslint-disable-next-line no-console
-		console.log('[BASE API] response interceptor');
-		// eslint-disable-next-line no-console
-		console.log(requestMade);
 		if (error.response.status === 401 && !requestMade._retry) {
 			requestMade._retry = true;
 			const refreshResponse = await refresh.post();
@@ -77,12 +73,10 @@ base.interceptors.response.use(
 				const response = await axios(requestMade);
 				return response;
 			}
-		} else if (error.response.status === 403) {
 			// eslint-disable-next-line no-console
 			console.log(error);
 		} else if (error.response.status >= 400) {
-			// eslint-disable-next-line no-console
-			console.log(error);
+			throw error;
 		} else {
 			throw error;
 		}

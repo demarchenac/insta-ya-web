@@ -3,7 +3,7 @@ export function parseError(code) {
 		case 'user_already_exists':
 			return 'Este usuario ya se encuentra registrado';
 		case 'user_not_found':
-			return 'Error en el correo o contraseña';
+			return 'Correo o contraseña erroneos';
 		case 'session_expired':
 			return 'La sesión expiro';
 		default:

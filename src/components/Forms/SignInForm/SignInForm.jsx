@@ -4,7 +4,7 @@ import { Button } from '@/components/Button';
 import { useFormFields } from '@/hooks/useFormFields';
 import { Field } from '../FormComponents';
 
-const initialValues = { email: 'dperez@domain.com', password: '12345' };
+const initialValues = { email: 'dmejia@example.com', password: '12345' };
 
 export const formFields = ['email', 'password'];
 
