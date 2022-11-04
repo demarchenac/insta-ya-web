@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 const colClasses = 'text-sm flex-1 text-center';
 
@@ -27,7 +28,11 @@ export function RequestItem({ request, isEven = false }) {
 			key={serviceNumber}
 			className={`flex items-center space-x-5 p-2 py-4 w-full ${bgColor}`}
 		>
-			<td className={colClasses}>{formattedServiceNumber}</td>
+			<td className={colClasses}>
+				<Link className="text-indigo-600 cursor-pointer hover:underline">
+					{formattedServiceNumber}
+				</Link>
+			</td>
 			<td
 				className={colClasses}
 				title={`${formattedDue} ${dueDate.toLocaleTimeString()}`}
