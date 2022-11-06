@@ -3,6 +3,10 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { SignIn, action as signInAction } from './auth/SignIn';
 import { SignUp, action as signUpAction } from './auth/SignUp';
 import { Requests, loader as requestsLoader } from './client/Requests';
+import {
+	NewRequest,
+	action as newRequestAction,
+} from './client/Requests/NewRequest';
 
 function RootLayout() {
 	return (
@@ -40,8 +44,18 @@ export const appRoutes = [
 					{ index: true, element: <Navigate to="/client/requests" replace /> },
 					{
 						path: 'requests',
-						loader: requestsLoader,
-						element: <ProtectedRoute route={<Requests />} />,
+						children: [
+							{
+								index: true,
+								loader: requestsLoader,
+								element: <ProtectedRoute route={<Requests />} />,
+							},
+							{
+								path: 'new',
+								element: <ProtectedRoute route={<NewRequest />} />,
+								action: newRequestAction,
+							},
+						],
 					},
 				],
 			},

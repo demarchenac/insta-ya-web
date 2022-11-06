@@ -3,4 +3,4 @@ export { doRequest } from './doRequest';
 export { LocalStorage } from './localStorage';
 export { parseError } from './parseError';
 export { parseFormData } from './parseFormData';
-export { success } from './success';
+export { successMessages } from './success';

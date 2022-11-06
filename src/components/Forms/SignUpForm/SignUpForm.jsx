@@ -126,7 +126,7 @@ export function SignUpForm() {
 					onError={toggleError}
 					inputProps={{
 						name: 'identificationNumber',
-						placeholder: '1.234.567.890',
+						placeholder: '12345678901',
 						required: true,
 					}}
 				/>

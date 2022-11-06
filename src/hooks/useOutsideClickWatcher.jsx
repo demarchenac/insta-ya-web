@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export function useOutsideClickWatcher(inRef, ref, reset, callback) {
+export function useOutsideClickWatcher(inRef, ref, callback) {
 	useEffect(() => {
 		// "click" event handler
 		const handleOutsideClick = (event) => {
@@ -11,7 +11,6 @@ export function useOutsideClickWatcher(inRef, ref, reset, callback) {
 			const targetIsRef = ref.current.contains(event.target);
 
 			if (inRef && !targetIsRef) {
-				reset();
 				callback();
 			}
 		};

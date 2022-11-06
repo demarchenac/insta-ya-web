@@ -1,17 +1,17 @@
-import { api } from '@/api';
 import { LocalStorage } from '@/api/utilities';
 import { doFetch } from '@/api/utilities/doFetch';
+import { findAll as findAllRequests } from '@/api/v1/request';
 import { Divider } from '@/components/Divider';
 import { Empty } from '@/components/Empty';
 import { Logo } from '@/components/Logo';
 import { RequestTable } from '@/components/Request';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { Link, useLoaderData, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 export async function loader() {
 	try {
 		const response = await doFetch({
-			endpoint: api.v1.requests.findAll,
+			endpoint: findAllRequests,
 		});
 
 		return response.data.payload;
@@ -58,9 +58,12 @@ export function Requests() {
 					</div>
 					<Divider />
 					<div className="flex flex-col space-y-8">
-						<span className="ml-4 pt-2 text-indigo-600 italic cursor-pointer hover:underline">
+						<Link
+							to="/client/requests/new"
+							className="ml-4 pt-2 text-indigo-600 italic cursor-pointer hover:underline"
+						>
 							Añadir solicitud
-						</span>
+						</Link>
 
 						{isEmpty ? <Empty /> : <RequestTable requests={requests} />}
 					</div>

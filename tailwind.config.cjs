@@ -11,8 +11,12 @@ module.exports = {
 			},
 			maxHeight: {
 				87: '21.75rem',
+				128: '32rem',
 			},
 		},
 	},
-	plugins: [],
+	plugins: [require('tailwind-scrollbar')({ nocompatible: true })],
+	variants: {
+		scrollbar: ['rounded'],
+	},
 };

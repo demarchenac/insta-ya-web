@@ -1,6 +1,6 @@
-import { useOutsideClickWatcher } from '@/hooks/useOutsideClickWatcher';
-import PropTypes from 'prop-types';
 import { useCallback, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
+import { useOutsideClickWatcher } from '@/hooks/useOutsideClickWatcher';
 
 const inputTypes = [
 	'button',
@@ -55,7 +55,12 @@ export function Input({
 
 	const ref = useRef(null);
 
-	useOutsideClickWatcher(isInInput, ref, resetInInput, onOutsideClick);
+	const outsideClickHandler = () => {
+		resetInInput();
+		onOutsideClick();
+	};
+
+	useOutsideClickWatcher(isInInput, ref, outsideClickHandler);
 
 	return (
 		<input

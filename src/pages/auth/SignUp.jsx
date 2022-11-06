@@ -1,5 +1,5 @@
-import { api } from '@/api';
-import { doRequest } from '@/api/utilities';
+import { doRequest, successMessages } from '@/api/utilities';
+import { signUp } from '@/api/v1/auth';
 import { redirect } from 'react-router-dom';
 import { signUpFields, SignUpForm, signUpSchema } from '../../components/Forms';
 import { Logo } from '../../components/Logo';
@@ -10,8 +10,8 @@ export async function action({ request }) {
 			request,
 			keys: signUpFields,
 			schema: signUpSchema,
-			endpoint: api.v1.auth.signUp,
-			success: api.success.auth.signUp,
+			endpoint: signUp,
+			success: successMessages.auth.signUp,
 		});
 
 		return redirect('/auth/sign-in');

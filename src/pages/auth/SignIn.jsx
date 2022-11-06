@@ -1,5 +1,5 @@
-import { api } from '@/api';
-import { doRequest, LocalStorage } from '@/api/utilities';
+import { doRequest, LocalStorage, successMessages } from '@/api/utilities';
+import { signIn } from '@/api/v1/auth';
 import { redirect } from 'react-router-dom';
 import { signInFields, SignInForm } from '../../components/Forms';
 import { Logo } from '../../components/Logo';
@@ -9,8 +9,8 @@ export async function action({ request }) {
 		const response = await doRequest({
 			request,
 			keys: signInFields,
-			endpoint: api.v1.auth.signIn,
-			success: api.success.auth.signIn,
+			endpoint: signIn,
+			success: successMessages.auth.signIn,
 		});
 
 		const token = response.data.payload.lemon_qid;
