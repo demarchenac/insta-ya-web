@@ -16,28 +16,31 @@ export function useSelect({
 		onUpdate(name, value);
 	}, [onUpdate, name, value]);
 
-	const handler = useCallback((option) => {
-		setValue(() => {
-			if (initialValue === option.value) {
-				toggleDirty(false);
-			} else {
-				toggleDirty(true);
+	const handler = useCallback(
+		(option) => {
+			setValue(() => {
+				if (initialValue === option.value) {
+					toggleDirty(false);
+				} else {
+					toggleDirty(true);
+				}
+
+				toggleTouched(true);
+
+				return option.value;
+			});
+
+			try {
+				schema.parse(option.value);
+				setError(false);
+				onError(name, false);
+			} catch (error) {
+				setError(error.issues[0].message);
+				onError(name, true);
 			}
-
-			toggleTouched(true);
-
-			return option.value;
-		});
-
-		try {
-			schema.parse(option.value);
-			setError(false);
-			onError(false);
-		} catch (error) {
-			setError(error.issues[0].message);
-			onError(true);
-		}
-	}, []);
+		},
+		[name],
+	);
 
 	const onTouched = useCallback(() => {
 		toggleTouched(true);

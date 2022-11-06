@@ -2,10 +2,10 @@ import { Form, useActionData, useNavigation } from 'react-router-dom';
 import { z } from 'zod';
 import { useFormFields } from '@/hooks/useFormFields';
 import { Button } from '../../Button';
-import { Field, SelectField } from '../FormComponents';
+import { CheckboxField, Field, SelectField } from '../FormComponents';
 
 const initialValues = {
-	isFragile: '',
+	isFragile: false,
 	width: '',
 	height: '',
 	depth: '',
@@ -47,7 +47,7 @@ const sharedNumberSchema = z
 	});
 
 export const fieldsSchema = z.object({
-	isFragile: z.string().regex(/(true|false)/, { message: 'Not a boolean' }),
+	isFragile: z.boolean(),
 	width: sharedNumberSchema,
 	height: sharedNumberSchema,
 	depth: sharedNumberSchema,
@@ -105,7 +105,7 @@ export function NewRequestForm() {
 	const actionData = useActionData();
 	const { success } = actionData ?? { success: true, issue: '' };
 
-	const { hasError, onFieldUpdate, toggleError } = useFormFields({
+	const { hasError, onFieldUpdate, toggleFieldError } = useFormFields({
 		initialValues,
 	});
 
@@ -122,7 +122,7 @@ export function NewRequestForm() {
 					schema={fieldsSchema.shape.toOwner}
 					initialValue={initialValues.toOwner}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
+					onError={toggleFieldError}
 					inputProps={{
 						name: 'toOwner',
 						placeholder: 'Juanito Perez',
@@ -135,7 +135,7 @@ export function NewRequestForm() {
 					schema={fieldsSchema.shape.toOwnerId}
 					initialValue={initialValues.toOwnerId}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
+					onError={toggleFieldError}
 					inputProps={{
 						name: 'toOwnerId',
 						placeholder: '12345678901',
@@ -175,25 +175,17 @@ export function NewRequestForm() {
 
 			{/* Detalles */}
 			<div className="flex space-x-4">
-				{/* <Field
-					label="Destinatario - nombre"
-					schema={fieldsSchema.shape.toOwner}
-					initialValue={initialValues.password}
-					onUpdate={onFieldUpdate}
-					onError={toggleError}
-					inputProps={{
-						name: 'password',
-						placeholder: 'Juanito Perez',
-						required: true,
-					}}
-				/> */}
+				<CheckboxField
+					label="¿Es mercancía frágil?"
+					checkboxProps={{ name: 'isFragile' }}
+				/>
 
 				<SelectField
 					label="Estado"
 					initialValue={initialValues.state}
 					schema={fieldsSchema.shape.state}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
+					onError={toggleFieldError}
 					selectProps={{
 						name: 'state',
 						required: true,
@@ -212,7 +204,7 @@ export function NewRequestForm() {
 					schema={fieldsSchema.shape.width}
 					initialValue={initialValues.width}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
+					onError={toggleFieldError}
 					inputProps={{
 						name: 'width',
 						placeholder: '1',
@@ -224,7 +216,7 @@ export function NewRequestForm() {
 					schema={fieldsSchema.shape.height}
 					initialValue={initialValues.height}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
+					onError={toggleFieldError}
 					inputProps={{
 						name: 'height',
 						placeholder: '1',
@@ -236,7 +228,7 @@ export function NewRequestForm() {
 					schema={fieldsSchema.shape.depth}
 					initialValue={initialValues.depth}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
+					onError={toggleFieldError}
 					inputProps={{
 						name: 'depth',
 						placeholder: '1',
@@ -249,7 +241,7 @@ export function NewRequestForm() {
 					schema={fieldsSchema.shape.weight}
 					initialValue={initialValues.weight}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
+					onError={toggleFieldError}
 					inputProps={{
 						name: 'weight',
 						placeholder: '1',
@@ -265,7 +257,7 @@ export function NewRequestForm() {
 					schema={fieldsSchema.shape.fromCity}
 					initialValue={initialValues.fromCity}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
+					onError={toggleFieldError}
 					inputProps={{
 						name: 'fromCity',
 						placeholder: 'Barranquilla',
@@ -277,7 +269,7 @@ export function NewRequestForm() {
 					schema={fieldsSchema.shape.fromAddress}
 					initialValue={initialValues.fromAddress}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
+					onError={toggleFieldError}
 					inputProps={{
 						name: 'fromAddress',
 						placeholder: 'Km 5, Vía Puerto Colombia',
@@ -293,7 +285,7 @@ export function NewRequestForm() {
 					schema={fieldsSchema.shape.toCity}
 					initialValue={initialValues.toCity}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
+					onError={toggleFieldError}
 					inputProps={{
 						name: 'toCity',
 						placeholder: 'Santa Marta',
@@ -305,7 +297,7 @@ export function NewRequestForm() {
 					schema={fieldsSchema.shape.toAddress}
 					initialValue={initialValues.toAddress}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
+					onError={toggleFieldError}
 					inputProps={{
 						name: 'toAddress',
 						placeholder: 'Cl. 21 #2A-05',

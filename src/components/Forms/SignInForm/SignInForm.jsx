@@ -20,7 +20,7 @@ export function SignInForm() {
 	const { state } = useNavigation();
 	const isSubmitting = state === 'submitting';
 
-	const { hasError, onFieldUpdate, toggleError } = useFormFields({
+	const { hasError, onFieldUpdate, toggleFieldError } = useFormFields({
 		initialValues,
 	});
 
@@ -35,7 +35,7 @@ export function SignInForm() {
 				schema={fieldsSchema.shape.email}
 				initialValue={initialValues.email}
 				onUpdate={onFieldUpdate}
-				onError={toggleError}
+				onError={toggleFieldError}
 				inputProps={{
 					type: 'email',
 					name: 'email',
@@ -49,7 +49,7 @@ export function SignInForm() {
 				schema={fieldsSchema.shape.password}
 				initialValue={initialValues.password}
 				onUpdate={onFieldUpdate}
-				onError={toggleError}
+				onError={toggleFieldError}
 				inputProps={{
 					type: 'password',
 					name: 'password',

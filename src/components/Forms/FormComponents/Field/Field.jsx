@@ -29,8 +29,8 @@ export function Field({
 	const errorText = isRequired ? 'Campo requerido' : error;
 
 	useEffect(() => {
-		onError(hasError);
-	}, [wasTouched, required, isDirty, error]);
+		onError(name, hasError);
+	}, [name, wasTouched, required, isDirty, error]);
 
 	return (
 		<div className="flex flex-col w-full ">

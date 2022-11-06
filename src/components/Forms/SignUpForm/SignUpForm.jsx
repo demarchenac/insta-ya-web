@@ -66,7 +66,7 @@ export function SignUpForm() {
 	const actionData = useActionData();
 	const { success, issue } = actionData ?? { success: true, issue: '' };
 
-	const { hasError, onFieldUpdate, toggleError } = useFormFields({
+	const { hasError, onFieldUpdate, toggleFieldError } = useFormFields({
 		initialValues,
 	});
 
@@ -82,7 +82,7 @@ export function SignUpForm() {
 					schema={fieldsSchema.shape.name}
 					initialValue={initialValues.name}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
+					onError={toggleFieldError}
 					inputProps={{
 						name: 'name',
 						placeholder: 'Gonzálo',
@@ -95,7 +95,7 @@ export function SignUpForm() {
 					schema={fieldsSchema.shape.lastName}
 					initialValue={initialValues.lastName}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
+					onError={toggleFieldError}
 					inputProps={{
 						name: 'lastName',
 						placeholder: 'Peréz',
@@ -110,7 +110,7 @@ export function SignUpForm() {
 					schema={fieldsSchema.shape.email}
 					initialValue={initialValues.email}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
+					onError={toggleFieldError}
 					inputProps={{
 						type: 'email',
 						name: 'email',
@@ -123,7 +123,7 @@ export function SignUpForm() {
 					schema={fieldsSchema.shape.identificationNumber}
 					initialValue={initialValues.identificationNumber}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
+					onError={toggleFieldError}
 					inputProps={{
 						name: 'identificationNumber',
 						placeholder: '12345678901',
@@ -138,7 +138,7 @@ export function SignUpForm() {
 					schema={fieldsSchema.shape.password}
 					initialValue={initialValues.password}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
+					onError={toggleFieldError}
 					inputProps={{
 						type: 'password',
 						name: 'password',
@@ -152,7 +152,7 @@ export function SignUpForm() {
 					schema={fieldsSchema.shape.passwordConfirmation}
 					initialValue={initialValues.passwordConfirmation}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
+					onError={toggleFieldError}
 					inputProps={{
 						type: 'password',
 						name: 'passwordConfirmation',

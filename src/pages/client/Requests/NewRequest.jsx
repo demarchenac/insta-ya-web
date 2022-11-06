@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 export async function action({ request }) {
 	const formData = await request.formData();
 	const body = parseFormData(formData, newRequestFields);
+	body.isFragile = body.isFragile === 'true' ? true : false;
 
 	// eslint-disable-next-line no-console
 	console.log({ body });
