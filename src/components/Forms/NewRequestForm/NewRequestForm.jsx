@@ -342,7 +342,7 @@ export function NewRequestForm() {
 				/>
 			</div>
 
-			<div className="flex flex-col">
+			<div className="flex flex-col pb-2">
 				<Button
 					type="submit"
 					disabled={hasError || isSubmitting}
