@@ -14,7 +14,7 @@ export function CheckboxField({ label, initialValue = false, checkboxProps }) {
 	return (
 		<div className="flex items-center w-full ">
 			<Checkbox name={name} isSelected={selected} onCheck={onCheckHandler} />
-			<Label htmlFor={name} onClick={onCheckHandler} isForCheckbox>
+			<Label htmlFor={name} isForCheckbox>
 				{label}
 			</Label>
 		</div>

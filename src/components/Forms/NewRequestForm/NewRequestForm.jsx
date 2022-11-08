@@ -2,7 +2,12 @@ import { Form, useActionData, useNavigation } from 'react-router-dom';
 import { z } from 'zod';
 import { useFormFields } from '@/hooks/useFormFields';
 import { Button } from '../../Button';
-import { CheckboxField, Field, SelectField } from '../FormComponents';
+import {
+	CheckboxField,
+	DatepickerField,
+	Field,
+	SelectField,
+} from '../FormComponents';
 
 const initialValues = {
 	isFragile: false,
@@ -10,7 +15,8 @@ const initialValues = {
 	height: '',
 	depth: '',
 	weight: '',
-	due: '',
+	dueDate: '',
+	dueHour: '',
 	state: '',
 	fromCity: '',
 	fromAddress: '',
@@ -21,12 +27,13 @@ const initialValues = {
 };
 
 export const formFields = [
-	'isFragile', // TODO: CHECKBOX FIELD
+	'isFragile',
 	'width',
 	'height',
 	'depth',
 	'weight',
-	'due', // TODO DATE & HOUR FIELDS
+	'dueDate',
+	'dueHour',
 	'state',
 	'fromCity',
 	'fromAddress',
@@ -35,6 +42,25 @@ export const formFields = [
 	'toOwner',
 	'toOwnerId',
 ];
+
+const hours_12 = [...Array(11).keys()].map((v) => v + 1);
+hours_12.unshift(12);
+
+const hours_24 = [
+	...hours_12.map((am) => `${am}`.padStart(2, '0') + 'am'),
+	...hours_12.map((pm) => `${pm}`.padStart(2, '0') + 'pm'),
+];
+
+const hourValues = [...Array(24).keys()].map(
+	(hv) => `${hv}`.padStart(2, '0') + ':00:00',
+);
+
+const hourOptions = [...Array(24).keys()].map((index) => {
+	return {
+		value: hourValues[index],
+		display: hours_24[index],
+	};
+});
 
 const sharedNumberSchema = z
 	.string()
@@ -52,20 +78,29 @@ export const fieldsSchema = z.object({
 	height: sharedNumberSchema,
 	depth: sharedNumberSchema,
 	weight: sharedNumberSchema,
-	due: z
+	dueDate: z
 		.string()
-		.regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/, {
-			message: 'Not a date',
+		.regex(/^\d{4}-\d{2}-\d{2}$/, {
+			message: 'Formato inválido (YYYY-MM-DD)',
 		})
 		.refine(
 			(dueStr) => {
-				const min = new Date(Date.now() + 24 * 60 * 60 * 1000); // plus 24h
-				const due = new Date(dueStr);
+				const min = new Date(
+					new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
+				); // plus 24h
+
+				const dueWithoutOffset = new Date(dueStr);
+				// due date plus local offset in ms
+				const due = new Date(
+					dueWithoutOffset.getTime() +
+						dueWithoutOffset.getTimezoneOffset() * 60 * 1000,
+				);
 
 				return due.getTime() >= min.getTime();
 			},
-			{ message: 'Too early!' },
+			{ message: 'La fecha tiene que ser 24h despúes de hoy' },
 		),
+	dueHour: z.enum(hourValues),
 	state: z.enum(['guardado', 'cumplido']),
 	fromCity: z
 		.string()
@@ -111,7 +146,7 @@ export function NewRequestForm() {
 
 	return (
 		<Form
-			className="flex flex-col pr-8 pl-2 space-y-6 w-full max-h-128 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thumb-indigo-600 scrollbar-track-indigo-300"
+			className="flex flex-col pr-8 pl-2 space-y-6 w-full max-h-150 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thumb-indigo-600 scrollbar-track-indigo-300"
 			action="/client/requests/new"
 			method="post"
 		>
@@ -145,33 +180,34 @@ export function NewRequestForm() {
 			</div>
 
 			{/* Entrega */}
-			{/* <div className="flex space-x-4">
-				<Field
-					label="Entrega - Fecha"
-					schema={fieldsSchema.shape.due}
-					initialValue={initialValues.due}
+			<div className="flex space-x-4">
+				<DatepickerField
+					label="Entrega - fecha"
+					schema={fieldsSchema.shape.dueDate}
+					initialValue={initialValues.dueDate}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
-					inputProps={{
-						name: 'due',
-						placeholder: '2022-11-05',
+					onError={toggleFieldError}
+					datepickerProps={{
+						name: 'dueDate',
 						required: true,
+						placeholder: 'Seleccione la fecha de llegada',
+						minDateTime: new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
 					}}
 				/>
 
-				<Field
-					label="Entrega - Hora"
-					schema={fieldsSchema.shape.due}
-					initialValue={initialValues.due}
+				<SelectField
+					label="Entrega - hora"
+					initialValue={initialValues.dueHour}
+					schema={fieldsSchema.shape.dueHour}
 					onUpdate={onFieldUpdate}
-					onError={toggleError}
-					inputProps={{
-						name: 'due',
-						placeholder: '15:35:00',
+					onError={toggleFieldError}
+					selectProps={{
+						name: 'dueHour',
 						required: true,
+						options: hourOptions,
 					}}
 				/>
-			</div> */}
+			</div>
 
 			{/* Detalles */}
 			<div className="flex space-x-4">

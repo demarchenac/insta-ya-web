@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useState } from 'react';
 
-export function useField({
+export function useDatepicker({
 	name,
 	schema,
 	initialValue = '',
@@ -17,9 +17,9 @@ export function useField({
 	}, [onUpdate, name, value]);
 
 	const handler = useCallback(
-		(event) => {
+		(date) => {
 			setValue(() => {
-				if (initialValue === event.target.value) {
+				if (initialValue === date) {
 					toggleDirty(false);
 				} else {
 					toggleDirty(true);
@@ -27,11 +27,11 @@ export function useField({
 
 				toggleTouched(true);
 
-				return event.target.value;
+				return date;
 			});
 
 			try {
-				schema.parse(event.target.value);
+				schema.parse(date);
 				setError(false);
 				onError(name, false);
 			} catch (error) {

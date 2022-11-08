@@ -24,16 +24,20 @@ export function Select({
 	const [selected, setSelected] = useState({});
 
 	const ref = useRef();
+	const listRef = useRef();
 
 	const outsideClickHandler = () => {
 		toggleInSelect(false);
-		if (!persistOptions) {
-			toggleOptions(false);
-		}
+		toggleOptions(false);
 		onOutsideClick();
 	};
 
-	useOutsideClickWatcher(isInSelect, ref, outsideClickHandler);
+	useOutsideClickWatcher(
+		isInSelect,
+		ref,
+		outsideClickHandler,
+		persistOptions ? listRef : null,
+	);
 
 	const hasEmptyValue =
 		selected && (!selected.value || (selected.value && selected.value === ''));
@@ -101,8 +105,8 @@ export function Select({
 				/>
 			</div>
 			{showOptions && (
-				<div className="relative">
-					<ul className="absolute bg-gray-50 text-gray-900 border border-gray-300 items-center rounded-lg w-full p-2.5 top-3 shadow-md cursor-pointer">
+				<div className="relative z-20" ref={listRef}>
+					<ul className="absolute bg-gray-50 text-gray-900 border border-gray-300 items-center rounded-lg w-full p-2.5 top-3 shadow-md cursor-pointer max-h-64  overflow-y-auto scrollbar-thin scrollbar-thumb-rounded-md scrollbar-track-transparent scrollbar-thumb-indigo-600 ">
 						{normalizedOptions.map((option) => {
 							const isSelected = option.value === selected.value;
 							const dynamicClasses = isSelected ? 'text-indigo-600' : '';

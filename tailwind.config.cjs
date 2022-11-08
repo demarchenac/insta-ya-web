@@ -12,6 +12,10 @@ module.exports = {
 			maxHeight: {
 				87: '21.75rem',
 				128: '32rem',
+				150: '37.5rem',
+			},
+			gridTemplateColumns: {
+				calendarMonth: 'repeat(1, 300px)',
 			},
 		},
 	},
