@@ -12,6 +12,7 @@ const iconErrorClasses = 'fill-red-500';
 
 export function Select({
 	name,
+	initialValue = null,
 	persistOptions = false,
 	options = [],
 	required = false,
@@ -19,9 +20,14 @@ export function Select({
 	handler = () => {},
 	onOutsideClick = () => {},
 }) {
+	const [initialOption] =
+		initialValue &&
+		options &&
+		options.filter((opt) => opt.value === initialValue);
+
 	const [showOptions, toggleOptions] = useState(false);
 	const [isInSelect, toggleInSelect] = useState(false);
-	const [selected, setSelected] = useState({});
+	const [selected, setSelected] = useState(initialOption ?? {});
 
 	const ref = useRef();
 	const listRef = useRef();
@@ -140,6 +146,7 @@ const stringArray = PropTypes.arrayOf(PropTypes.string);
 
 Select.propTypes = {
 	name: PropTypes.string.isRequired,
+	initialValue: PropTypes.string,
 	required: PropTypes.bool,
 	hasError: PropTypes.bool,
 	persistOptions: PropTypes.bool,

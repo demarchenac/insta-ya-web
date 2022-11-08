@@ -1,19 +1,40 @@
-import { parseFormData } from '@/api/utilities';
+import { Link, redirect } from 'react-router-dom';
+import { doRequest, parseFormData } from '@/api/utilities';
+import { addNewRequest } from '@/api/v1/request';
 import { Divider } from '@/components/Divider';
 import {
 	NewRequestForm,
 	formFields as newRequestFields,
 } from '@/components/Forms/NewRequestForm';
 import { Logo } from '@/components/Logo';
-import { Link } from 'react-router-dom';
 
 export async function action({ request }) {
 	const formData = await request.formData();
 	const body = parseFormData(formData, newRequestFields);
-	body.isFragile = body.isFragile === 'true' ? true : false;
 
-	// eslint-disable-next-line no-console
-	console.log({ body });
+	// body.isFragile = body.isFragile === 'true' ? true : false;
+
+	const dueWithoutOffset = new Date(`${body.dueDate}T${body.dueHour}.000Z`);
+	const due = new Date(
+		dueWithoutOffset.getTime() +
+			dueWithoutOffset.getTimezoneOffset() * 60 * 1000,
+	);
+
+	body.due = due.toISOString();
+
+	try {
+		await doRequest({
+			body,
+			endpoint: addNewRequest,
+			success: 'Se ha guarado su solicitud!',
+		});
+
+		return redirect('/client/requests');
+	} catch (error) {
+		if (!error.toasted) {
+			throw error;
+		}
+	}
 }
 
 export function NewRequest() {

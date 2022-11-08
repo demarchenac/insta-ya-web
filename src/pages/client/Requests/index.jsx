@@ -57,7 +57,7 @@ export function Requests() {
 						</span>
 					</div>
 					<Divider />
-					<div className="flex flex-col space-y-8">
+					<div className="flex flex-col space-y-8 pr-8 max-h-150 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thumb-indigo-600 scrollbar-track-indigo-300">
 						<Link
 							to="/client/requests/new"
 							className="ml-4 pt-2 text-indigo-600 italic cursor-pointer hover:underline"

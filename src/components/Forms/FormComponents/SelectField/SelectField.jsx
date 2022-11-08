@@ -38,6 +38,7 @@ export function SelectField({
 			</Label>
 			<Select
 				name={name}
+				initialValue={initialValue}
 				options={options}
 				required={required}
 				hasError={hasError}

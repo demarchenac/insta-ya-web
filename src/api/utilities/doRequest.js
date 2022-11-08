@@ -8,15 +8,20 @@ export async function doRequest({
 	schema = null,
 	endpoint,
 	success,
+	body = null,
 }) {
-	const formData = await request.formData();
-	const body = parseFormData(formData, keys);
+	let requestBody = body;
+
+	if (!body) {
+		const formData = await request.formData();
+		requestBody = parseFormData(formData, keys);
+	}
 
 	// eslint-disable-next-line no-console
-	console.log({ body });
+	console.log({ requestBody });
 
 	if (schema) {
-		const submission = schema.safeParse(body);
+		const submission = schema.safeParse(requestBody);
 
 		// eslint-disable-next-line no-console
 		console.log({ submission });
@@ -30,7 +35,7 @@ export async function doRequest({
 	}
 
 	try {
-		const response = await endpoint(body);
+		const response = await endpoint(requestBody);
 
 		toast.dismiss();
 		toast(success, {
