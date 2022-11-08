@@ -14,13 +14,13 @@ Esta aplicación web se encuentra desarrollada con las siguientes tecnologías:
 - [axios](https://www.npmjs.com/package/axios), para consumir recursos REST por medio de peticiones http
 - [zod](https://www.npmjs.com/package/zod), para validar objetos json de una forma rápida y sencilla
 
-Y tambien cuenta con otras tecnologías para facilitar la experiencia como desarrollador:
+Y también cuenta con otras tecnologías para facilitar la experiencia como desarrollador:
 
-- [eslint](), para validar estándares y reglas de formato en nuestro código
-- [prettier](), para darle formato a nuestro código de forma automática
-- [tailwindcss](), para estilizar nuestra interfaz gráfica
-- [husky](), para ejecutar comandos antes de hacer commit con nuestros cambios
-- [lint-staged](), para ejecutar comandos tomando en cuenta solo los archivos en el área de stage
+- [eslint](https://www.npmjs.com/package/eslint), para validar estándares y reglas de formato en nuestro código
+- [prettier](https://www.npmjs.com/package/prettier), para darle formato a nuestro código de forma automática
+- [tailwindcss](https://www.npmjs.com/package/tailwindcss), para estilizar nuestra interfaz gráfica
+- [husky](https://www.npmjs.com/package/husky), para ejecutar comandos antes de hacer commit con nuestros cambios
+- [lint-staged](https://www.npmjs.com/package/lint-staged), para ejecutar comandos tomando en cuenta solo los archivos en el área de stage
 
 ## Comandos
 
