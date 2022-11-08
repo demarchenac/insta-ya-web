@@ -38,13 +38,19 @@ Para ejecutar algún, por lo general usaremos `npm run <comando>`, estaremos tra
 
 ## Configuración
 
-Es configurar las variables de entorno del proyecto para que este pueda funcionar adecuadamente en un entorno local. Para esto, crearemos el archivo `.env.development.local` en la carpeta raíz del proyecto con el siguiente contenido:
+### Entorno Local
+
+Es necesario configurar las variables de entorno del proyecto para que este pueda funcionar adecuadamente en un entorno local. Para esto, crearemos el archivo `.env.development.local` en la carpeta raíz del proyecto con el siguiente contenido:
 
 ```env
 # .env.development
 
 VITE_API_URL=<Url a nuestra API>
 ```
+
+### Entorno productivo
+
+Una vez realizado el paso de [despliegue](#despliegue), debemos de configurar las variables de entorno en nuestro proyecto, para esto podemos ejecutar el comando `netlify env:set VITE_API_URL <host_de_nuestra_api>`.
 
 ## Despliegue
 
