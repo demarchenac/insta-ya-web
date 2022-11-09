@@ -1,9 +1,20 @@
-import "./App.css";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+
+import { ToastContainer } from 'react-toastify';
+
+import { appRoutes } from './pages';
+
+import 'react-toastify/dist/ReactToastify.css';
+
+export const router = createBrowserRouter(appRoutes);
 
 function App() {
-  return (
-    <h1 className="text-3xl font-bold underline">Hello world + TailwindCSS!</h1>
-  );
+	return (
+		<div>
+			<ToastContainer />
+			<RouterProvider router={router} />
+		</div>
+	);
 }
 
 export default App;
