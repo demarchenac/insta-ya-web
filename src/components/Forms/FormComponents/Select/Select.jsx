@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { SvgIcon } from '@/components/SVGIcon/SVGIcon';
+import { SvgIcon } from '@/components/SVGIcon';
 import { useOutsideClickWatcher } from '@/hooks/useOutsideClickWatcher';
 
 const normalClasses =
