@@ -47,6 +47,7 @@ export function DatepickerField({
 				name={name}
 				placeholder={placeholder}
 				value={value}
+				initialValue={initialValue}
 				minDateTime={minDateTime}
 				persistPicker={persistPicker}
 				handler={handler}

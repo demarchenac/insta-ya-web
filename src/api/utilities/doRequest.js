@@ -6,6 +6,7 @@ export async function doRequest({
 	request,
 	keys,
 	schema = null,
+	args = [],
 	endpoint,
 	success,
 	body = null,
@@ -35,7 +36,7 @@ export async function doRequest({
 	}
 
 	try {
-		const response = await endpoint(requestBody);
+		const response = await endpoint(...args, requestBody);
 
 		toast.dismiss();
 		toast(success, {

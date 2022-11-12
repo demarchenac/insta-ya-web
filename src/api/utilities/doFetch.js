@@ -1,9 +1,9 @@
 import { toast } from 'react-toastify';
 import { parseError } from './parseError';
 
-export async function doFetch({ endpoint }) {
+export async function doFetch({ endpoint, args = [] }) {
 	try {
-		const response = await endpoint();
+		const response = await endpoint(...args);
 		return response;
 	} catch (error) {
 		const errorCode = error?.response?.data[0]?.code;
