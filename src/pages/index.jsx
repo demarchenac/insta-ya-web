@@ -7,6 +7,11 @@ import {
 	NewRequest,
 	action as newRequestAction,
 } from './client/Requests/NewRequest';
+import {
+	UpdateRequest,
+	loader as loadRequestDetail,
+	action as updateRequestAction,
+} from './client/Requests/UpdateRequest';
 
 function RootLayout() {
 	return (
@@ -54,6 +59,12 @@ export const appRoutes = [
 								path: 'new',
 								element: <ProtectedRoute route={<NewRequest />} />,
 								action: newRequestAction,
+							},
+							{
+								path: ':serviceNumber',
+								loader: loadRequestDetail,
+								element: <ProtectedRoute route={<UpdateRequest />} />,
+								action: updateRequestAction,
 							},
 						],
 					},

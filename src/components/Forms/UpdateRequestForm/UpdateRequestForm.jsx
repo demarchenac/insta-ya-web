@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Form, useActionData, useNavigation } from 'react-router-dom';
 import { z } from 'zod';
 import { useFormFields } from '@/hooks/useFormFields';
@@ -8,23 +9,6 @@ import {
 	Field,
 	SelectField,
 } from '../FormComponents';
-
-const initialValues = {
-	isFragile: false,
-	width: '',
-	height: '',
-	depth: '',
-	weight: '',
-	dueDate: '',
-	dueHour: '',
-	state: 'guardado',
-	fromCity: '',
-	fromAddress: '',
-	toCity: '',
-	toAddress: '',
-	toOwner: '',
-	toOwnerId: '',
-};
 
 export const formFields = [
 	'isFragile',
@@ -101,7 +85,7 @@ export const fieldsSchema = z.object({
 			{ message: 'La fecha tiene que ser 24h despúes de hoy' },
 		),
 	dueHour: z.enum(hourValues),
-	state: z.enum(['guardado', 'cumplido']),
+	state: z.enum(['guardado', 'cumplido', 'cancelado']),
 	fromCity: z
 		.string()
 		.min(3, { message: 'Mínimo 3 caracteres' })
@@ -132,7 +116,7 @@ export const fieldsSchema = z.object({
 		}),
 });
 
-export function NewRequestForm() {
+export function UpdateRequestForm({ initialValues }) {
 	const { state } = useNavigation();
 
 	const isSubmitting = state === 'submitting';
@@ -147,8 +131,8 @@ export function NewRequestForm() {
 	return (
 		<Form
 			className="flex flex-col pr-8 pl-2 space-y-6 w-full max-h-150 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thumb-indigo-600 scrollbar-track-indigo-300"
-			action="/client/requests/new"
-			method="post"
+			action=""
+			method="put"
 		>
 			{/* Destinatario */}
 			<div className="flex space-x-4">
@@ -191,7 +175,7 @@ export function NewRequestForm() {
 						name: 'dueDate',
 						required: true,
 						placeholder: 'Seleccione la fecha de llegada',
-						minDateTime: new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
+						minDateTime: new Date(initialValues.createdAt).getTime(),
 					}}
 				/>
 
@@ -229,6 +213,7 @@ export function NewRequestForm() {
 						options: [
 							{ value: 'guardado', display: 'Guardado' },
 							{ value: 'cumplido', display: 'Cumplido' },
+							{ value: 'cancelado', display: 'Cancelado' },
 						],
 					}}
 				/>
@@ -350,9 +335,30 @@ export function NewRequestForm() {
 					hasError={!success}
 					isLoading={isSubmitting}
 				>
-					Generar solicitud
+					Actualizar solicitud
 				</Button>
 			</div>
 		</Form>
 	);
 }
+
+UpdateRequestForm.propTypes = {
+	initialValues: PropTypes.shape({
+		isFragile: PropTypes.bool,
+		width: PropTypes.string,
+		height: PropTypes.string,
+		depth: PropTypes.string,
+		weight: PropTypes.string,
+		dueDate: PropTypes.string,
+		dueHour: PropTypes.string,
+		state: PropTypes.string,
+		fromCity: PropTypes.string,
+		fromAddress: PropTypes.string,
+		toCity: PropTypes.string,
+		toAddress: PropTypes.string,
+		toOwner: PropTypes.string,
+		toOwnerId: PropTypes.string,
+		_id: PropTypes.string,
+		createdAt: PropTypes.string,
+	}),
+};

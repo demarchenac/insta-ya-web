@@ -10,6 +10,7 @@ const errorClasses = 'border border-red-500 focus:ring-red-300';
 export function DatepickerInput({
 	name,
 	value,
+	initialValue = null,
 	required = false,
 	hasError = false,
 	persistPicker = false,
@@ -20,7 +21,15 @@ export function DatepickerInput({
 }) {
 	const [showDatepicker, toggleDatepicker] = useState(false);
 	const [isInDatepicker, toggleInDatepicker] = useState(false);
-	const [selectedDate, setSelectedDate] = useState(null);
+	const [selectedDate, setSelectedDate] = useState(() => {
+		if (!initialValue) {
+			return null;
+		}
+
+		const [year, month, date] = initialValue.split('-').map((v) => parseInt(v));
+
+		return new Date(year, month - 1, date, 0, 0, 0, 0);
+	});
 
 	const ref = useRef();
 	const datepickerRef = useRef();
@@ -103,4 +112,5 @@ DatepickerInput.propTypes = {
 	placeholder: PropTypes.string,
 	handler: PropTypes.func,
 	onOutsideClick: PropTypes.func,
+	initialValue: PropTypes.string,
 };
