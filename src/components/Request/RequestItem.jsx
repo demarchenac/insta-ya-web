@@ -13,13 +13,17 @@ export function RequestItem({ request, isEven = false }) {
 	const month = `${dueDate.getMonth() + 1}`.padStart(2, '0');
 	const day = `${dueDate.getDate()}`.padStart(2, '0');
 
+	const dueAfter24h = dueDate.getTime() + 24 * 60 * 60 * 1000;
+	const isAlreadyComplete = dueAfter24h < Date.now();
+
 	const formattedDue = `${year}-${month}-${day}`;
 
 	const formattedToAddress =
 		toAddress.length > 17 ? toAddress.substring(0, 14) + '...' : toAddress;
 
-	const formattedState =
-		state.substring(0, 1).toUpperCase() + state.substring(1);
+	const formattedState = isAlreadyComplete
+		? 'Completado'
+		: state.substring(0, 1).toUpperCase() + state.substring(1);
 
 	const bgColor = isEven ? 'bg-gray-100' : '';
 
