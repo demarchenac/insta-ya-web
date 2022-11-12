@@ -21,9 +21,10 @@ export function RequestItem({ request, isEven = false }) {
 	const formattedToAddress =
 		toAddress.length > 17 ? toAddress.substring(0, 14) + '...' : toAddress;
 
-	const formattedState = isAlreadyComplete
-		? 'Completado'
-		: state.substring(0, 1).toUpperCase() + state.substring(1);
+	const formattedState =
+		state !== 'cancelado' && isAlreadyComplete
+			? 'Completado'
+			: state.substring(0, 1).toUpperCase() + state.substring(1);
 
 	const bgColor = isEven ? 'bg-gray-100' : '';
 
